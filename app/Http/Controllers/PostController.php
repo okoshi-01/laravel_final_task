@@ -11,16 +11,22 @@ use App\Http\Requests\PostRequest;
 class PostController extends Controller
 {
     //投稿一覧ページ
-    public function index()
+    public function index(Request $request)
     {
         $user = \Auth::user();
         $follow_user_id = \Auth::user()->follow_users->pluck('id');
-        $posts = Post::posts($follow_user_id,$user->id)->get();
         $recommend_users = User::recommend_users($follow_user_id,$user->id)->take(3);
+        $search = $request->search;
+        if($search){
+            $posts = Post::search($user->id,$search)->get();
+        }else{
+            $posts = Post::posts($follow_user_id,$user->id)->get();
+        }
         return view('posts.index', [
           'title' => '投稿一覧',
           'posts' => $posts,
           'recommend_users' => $recommend_users,
+          'search' => $search,
         ]);
     }
     

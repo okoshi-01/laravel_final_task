@@ -15,4 +15,8 @@ class Post extends Model
     public function scopePosts($query, $follow_user_id, $user_id){
         return $query->whereIn('user_id', $follow_user_id)->orWhere('user_id', $user_id)->latest();
     }
+    
+    public function scopeSearch($query, $user_id, $search){
+        return $query->where('user_id', '!=', $user_id)->where('comment','LIKE', "%{$search}%")->latest();
+    }
 }
