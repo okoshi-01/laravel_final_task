@@ -23,3 +23,6 @@ Route::patch('/posts/{id}', 'PostController@update')->name('posts.update');
 
 Route::delete('/posts/{id}', 'PostController@destroy')->name('posts.destroy');
 
+Route::get('/users/{id}', 'UserController@show')->name('users.show');
+Route::post('/users/{id}', 'UserController@store')->name('users.store');
+Route::delete('/users/{id}', 'UserController@destroy')->name('users.destroy');

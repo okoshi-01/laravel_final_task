@@ -11,4 +11,8 @@ class Post extends Model
     public function user(){
       return $this->belongsTo('App\User');
     }
+    
+    public function scopePosts($query, $follow_user_id, $user_id){
+        return $query->whereIn('user_id', $follow_user_id)->orWhere('user_id', $user_id)->latest();
+    }
 }
