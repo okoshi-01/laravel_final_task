@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Post;
+use App\User;
+use App\Follow;
 use App\Http\Requests\PostRequest;
 
 class PostController extends Controller
@@ -11,10 +13,14 @@ class PostController extends Controller
     //投稿一覧ページ
     public function index()
     {
-        $posts = \Auth::user()->posts()->latest()->get();
+        $user = \Auth::user();
+        $follow_user_id = \Auth::user()->follow_users->pluck('id');
+        $posts = Post::posts($follow_user_id,$user->id)->get();
+        $recommend_users = User::recommend_users($follow_user_id,$user->id)->take(3);
         return view('posts.index', [
           'title' => '投稿一覧',
           'posts' => $posts,
+          'recommend_users' => $recommend_users,
         ]);
     }
     

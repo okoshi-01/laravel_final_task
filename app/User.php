@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Follow;
 
 class User extends Authenticatable
 {
@@ -39,5 +40,21 @@ class User extends Authenticatable
     
     public function posts(){
         return $this->hasMany('App\Post');
+    }
+    
+    public function follows(){
+        return $this->hasMany('App\Follow');
+    }
+    public function follow_users(){
+      return $this->belongsToMany('App\User', 'follows', 'user_id', 'follow_id');
+    }
+    
+    public function isFollowing($user){
+      $result = $this->follow_users->pluck('id')->contains($user->id);
+      return $result;
+    }
+    
+    public function scopeRecommend_users($query, $follow_user_id, $user_id){
+        return $query->whereNotIn('id', $follow_user_id)->get()->where('id', '!=', $user_id)->shuffle();
     }
 }
